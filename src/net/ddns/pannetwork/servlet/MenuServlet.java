@@ -28,7 +28,7 @@ public class MenuServlet extends HttpServlet {
 		
 		List<ItemLista> menu = new ArrayList<>();
 		
-		menu.add(new ItemLista("Listar livros do DB", ""));
+		menu.add(new ItemLista("Listar livros do DB", request.getContextPath() + "/admin/listaLivros"));
 		menu.add(new ItemLista("Cadastrar novo usuário", request.getContextPath() + "/admin/novoUsuario"));
 		menu.add(new ItemLista("Cadastrar novo livro", request.getContextPath() + "/admin/novoLivro"));
 		

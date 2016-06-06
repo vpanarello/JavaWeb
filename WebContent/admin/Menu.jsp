@@ -24,5 +24,7 @@
 <%} %>
 
 </ul>
+
+<h5>${storeBookMsg}</h5>
 </body>
 </html>

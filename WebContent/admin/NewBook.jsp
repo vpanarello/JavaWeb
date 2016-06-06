@@ -19,7 +19,8 @@
 	<tr>
 		<td>
 		<h3><center>Cadastro Novo Livro</center></h3>
-		 <form action="novoLivro" method="post">
+		
+		 <form action="novoLivro" method="post" enctype="multipart/form-data">
 		 	<label for="codigo">Código:</label><br/>
 			<input type="text" name="code" id="code" size="10"><br/>
 			<label for="titulo">Título:</label><br/>

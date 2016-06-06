@@ -1,88 +1,78 @@
 package net.ddns.pannetwork.servlet;
 
-import java.awt.print.Book;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.text.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.ddns.pannetwork.dao.GenericDao;
-import net.ddns.pannetwork.entity.Books;
-
+import javax.servlet.annotation.*;
 import javax.servlet.http.*;
+
+import net.ddns.pannetwork.dao.*;
+import net.ddns.pannetwork.entity.*;
+
 
 
 @WebServlet("/admin/novoLivro")
+@MultipartConfig
 public class storeBookServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-
     public storeBookServlet() {
         super();
     }
 
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		request.getRequestDispatcher("/admin/NewBook.jsp").forward(request, response);
-		
 	}
-
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		GenericDao<Books> dao = new GenericDao<>(Books.class);
+		InputStream inStream = null; Part filePart = null; byte[] imagem = null;
 		
-		InputStream inStream = null;
-		Part filePart = null;
-		byte[] imagem = null;
+		String[] param =  {	"code",
+							"title",
+							"author",
+							"pDate",
+							"preis",
+							"pict"};
+		String[] values = new String[param.length];
 		
-		
-
-
-		try {
-			String title = request.getParameter("title");
-			String author = request.getParameter("author");
-			String pDate = request.getParameter("pDate");
-			
-			int code = Integer.parseInt(request.getParameter("code"));
-			Date pubDate = new SimpleDateFormat("dd/MM/yyyy").parse(pDate);
-			Double preis = Double.parseDouble(request.getParameter("preis"));
-
-//			filePart = request.getPart("pict");
-
-		
-			if (filePart != null) {
-				imagem = new byte[(int) filePart.getSize()];
-				inStream = filePart.getInputStream();
-				inStream.read(imagem, 0, (int) filePart.getSize());
-			}
-			
-			Books book = new Books(title, author, pubDate, preis, imagem);
-			
-			dao.adicionar(book);
-			
-
-		} catch (ParseException e) {
-			System.out.println("Erro de parse com Datas");
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println("Erro Generico: " + e.getMessage());
-			e.printStackTrace();
+		for (int i = 0; i < param.length; i++){
+			values[i] = request.getParameter(param[i]);
 		}
 		
+		Books book = null;
 		
-		request.getRequestDispatcher("/admin/NewBook.jsp").forward(request, response);
+		filePart = request.getPart("pict");
 		
-		
-	}
+				
+		if (filePart != null) {
+			imagem = new byte[(int) filePart.getSize()];
+			inStream = filePart.getInputStream();
+			inStream.read(imagem, 0, (int) filePart.getSize());
 
+		}
+		
+		try {
+			book = new Books( Integer.parseInt(values[0]),
+									values[1],
+									values[2],
+									new SimpleDateFormat("dd/MM/yyyy").parse(values[3]),
+									Double.parseDouble(values[4]),
+									imagem);
+			
+		} catch (NumberFormatException | ParseException e1) {
+			e1.printStackTrace();
+		}
+	
+		
+		dao.adicionar(book);
+		
+		request.setAttribute("storeBookMsg", "Livro Armazenado no DB");
+		
+		request.getRequestDispatcher("/admin/menuPrincipal").forward(request, response);
+	}
+	
 }

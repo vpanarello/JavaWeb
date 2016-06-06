@@ -15,12 +15,13 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name="books")
+@Table(name="books", uniqueConstraints={@UniqueConstraint(columnNames={"CODE"})})
 public class Books implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+//	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="CODE")
 	private int code;
 	
@@ -45,8 +46,9 @@ public class Books implements Serializable {
 		super();
 	}
 	
-	public Books(String title, String author, Date publicationDate, double preis, byte[] image) {
+	public Books(int code, String title, String author, Date publicationDate, double preis, byte[] image) {
 		super();
+		this.code = code;
 		this.title = title;
 		this.author = author;
 		this.publicationDate = publicationDate;
@@ -66,5 +68,17 @@ public class Books implements Serializable {
 	public void setPreis(double preis) {this.preis = preis;}
 	public byte[] getImage() {return image;}
 	public void setImage(byte[] image) {this.image = image;}
-		
+	
+	
+	
+	@Override
+	public String toString() {
+		return String.format("code= %d,%n"
+							+"title= %s, %n"
+							+"author= %s,%n"
+							+"publicationDate= %s,%n"
+							+"preis= %f,%n", this.code, this.title, this.author, this.publicationDate, this.preis);
+							
+	
+	}	
 }

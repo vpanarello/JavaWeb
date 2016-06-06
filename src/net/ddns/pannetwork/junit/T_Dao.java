@@ -4,12 +4,10 @@
 package net.ddns.pannetwork.junit;
 
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import net.ddns.pannetwork.dao.*;
 import net.ddns.pannetwork.entity.*;
